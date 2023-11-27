@@ -1,0 +1,12 @@
+# create a new Laravel project
+# ------------------------------
+composer create-project laravel/laravel example-app
+
+# using php to start server: 
+# ---------------------------
+php -S localhost:8000 -t pubic
+
+# php artisan solution
+# -----------------------
+php artisan  # get a hel list on useful artisan command
+php artisan serve # start server on port 8000
