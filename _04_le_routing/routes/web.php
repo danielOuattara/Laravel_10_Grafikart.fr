@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('blog')->name("blog.")->group(function () {
+Route::prefix('/blog')->name("blog.")->group(function () {
     Route::get('/', function (Request $request) {
         # http://localhost:8000/blog?name=john_doe&age=41
         # OR
@@ -52,4 +52,6 @@ Route::prefix('blog')->name("blog.")->group(function () {
         'slug' => '[a-z0-9\-]+',
     ])->name("show");
 });
+
+
 # php artisan route:list
