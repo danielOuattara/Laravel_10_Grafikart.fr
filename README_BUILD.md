@@ -249,3 +249,101 @@ Route::prefix('/blog')->name("blog.")->group(function () {
         'slug' => '[a-z0-9\-]+',
     ])->name("show");
 ```
+
+## 06 Controllers
+
+- output logic from `routes` to separate file
+
+- create a blog controller
+
+```sh
+php artisan make:controller PostController
+```
+
+- output:
+
+```php
+
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+    //
+}
+```
+
+- update the PostController
+  
+```php
+# /app/Http/Controllers/PostController.php
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Post;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+    public function blog(): Paginator
+    {
+        return Post::paginate(25);
+    }
+
+    public function show(string $slug, string $id, Request $request): RedirectResponse | Post
+    {
+        $post = Post::findOrFail($id);
+        if ($post->slug !== $slug) {
+            return to_route('blog.show', ['slug' => $post->slug, 'id' => $post->id]);
+        }
+    }
+}
+```
+
+- update
+
+```php
+# /routes/web.php
+
+<?php
+
+use App\Http\Controllers\PostController;
+use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::prefix('/blog')->name("blog.")->controller(PostController::class)->group(function () {
+    Route::get('/', 'blog')->name("index");
+
+    Route::get('/{slug}-{id}', 'show')->where([
+        'id' => '[0-9]+',
+        'slug' => '[a-z0-9\-]+',
+    ])->name("show");
+});
+
+
+# php artisan route:list
+```
